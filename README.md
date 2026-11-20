@@ -16,6 +16,6 @@ Use Node 22, `npm ci`, `npm run dev`. Run `npm run test:gameplay` and `npm run b
 
 ## Revision 12
 
-Expanded the water volume and fish routes into the left river area, added four fishing pockets and matching expanded rock collision, introduced touch controls, lowered touch rendering resolution and removed the expensive planar water reflection on touch devices. Briefing is three short steps and the HUD shows one next action. 157 gameplay checks pass, including extended fish routes and joystick response. Final mobile-device visual/performance testing remains necessary.
+Expanded the water volume and fish routes into the left river area, added four fishing pockets and matching expanded rock collision, introduced touch controls, lowered touch rendering resolution and removed the expensive planar water reflection on touch devices. Briefing is three short steps and the HUD shows one next action. 158 gameplay checks pass, including extended fish routes and joystick response. Final mobile-device visual/performance testing remains necessary.
 
 The Gaussian splat and 3D models were supplied for this project. PlayCanvas licensing is included in LICENSE-PlayCanvas.txt.

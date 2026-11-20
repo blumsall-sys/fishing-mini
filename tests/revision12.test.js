@@ -1,3 +1,4 @@
+import {BankNavigation} from '../src/minigame/BankNavigation.js';
 import {DipNetController} from '../src/minigame/DipNetController.js';
 import{test}from'node:test';import assert from'node:assert/strict';import fs from'node:fs';
 import{joystickAxes}from'../src/ui/MobileControls.js';import{RiverCurrentSystem,inPolygon}from'../src/minigame/RiverCurrentSystem.js';import{advanceApproach}from'../src/minigame/ApproachFish.js';import{Vec3}from'playcanvas';import{rockGridGeometry}from'../src/minigame/RockGridMesh.js';import{SPECIES}from'../src/minigame/ScoreAndStewardship.js';
@@ -8,3 +9,5 @@ for(const [index,pocket]of level.river.fishingPockets.entries())test('fish pocke
 test('expanded collision mesh is authored from the same solid grid as fish navigation',()=>{const geo=rockGridGeometry(level.rockGrid,level.water.bottomY),count=level.rockGrid.heights.filter(h=>h!==null).length;assert.equal(geo.positions.length,count*24);assert.equal(geo.indices.length,count*30);assert.ok(geo.positions.every(Number.isFinite));});
 
 test('aim follows the fish-depth plane rather than a near-side rock at the water surface',()=>{const cameraPos=new Vec3(5.4,2,2.35),fish=new Vec3(5.9,-.78,3.95),net={camera:{getPosition:()=>cameraPos,forward:fish.clone().sub(cameraPos).normalize(),right:new Vec3(1,0,0)},level,target:new Vec3(),trapped:[],enabled:true,submerged:false,lift:0,river:new RiverCurrentSystem(level)};DipNetController.prototype.aim.call(net,1/60,true);assert.ok(Math.abs(net.desired.x-fish.x)<.01);assert.ok(Math.abs(net.desired.z-fish.z)<.01);assert.equal(net.inReach,true);});
+
+test('shoreline traversal can use dry rocks beyond the previous navigation rectangle',()=>{const l={rockGrid:{minX:0,minZ:0,cell:1,width:4,height:4,heights:Array(16).fill(.5)},navigationGrid:{minX:0,minZ:0,cell:1,width:1,height:1,heights:[.5]},waterY:-.3,player:[0,2.15,0],bankBounds:{minX:-10,maxX:-9,minZ:-10,maxZ:-9},walkBounds:{minX:0,maxX:4,minZ:0,maxZ:4}};const n=new BankNavigation(l);assert.equal(n.sample(2.5,2.5),.5);assert.equal(n.sample(5,5),null);});
