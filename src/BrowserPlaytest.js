@@ -18,11 +18,12 @@ export function installBrowserPlaytest(game){
  async function scoop(species){game.state.time=180;
   game.ui.hide();game.paused=false;if(game.state.state!=='PLAYING'){game.begin(.2);await wait(2.7);}game.spawn.clock=1e6;
   for(const f of [...game.spawn.fish])if(f.mode!=='banked')game.spawn.remove(f);game.net.cancel();
-  await walkTo(5.5,2.4);const f=game.spawn.spawn(species),safe=game.river.safePoint(5.9,3.95,.5);f.position.set(safe.x,game.level.waterY-.48,safe.z);f.mode='qa';activeFish=f;
+  await walkTo(5.5,2.4);const f=game.spawn.spawn(species),safe=game.river.safePoint(5.9,3.95,.5);f.position.set(safe.x,game.level.waterY-.48,safe.z);f.mode='qa';f.approach=false;f.travelPhase=null;f.route=null;activeFish=f;
   const p=game.camera.getPosition(),dx=f.position.x-p.x,dz=f.position.z-p.z;game.yaw=Math.atan2(-dx,-dz)*180/Math.PI;game.pitch=Math.atan2(f.position.y-p.y,Math.hypot(dx,dz))*180/Math.PI;game.net.pointer={x:innerWidth/2,y:innerHeight/2};game.net.blockedUntil=0;game.net.lastPress=-10;game.net.presses=[];await wait(.6);game.net.down();await until(()=>game.net.scoopReady,5,'net beneath fish');game.net.up();await until(()=>game.net.trapped.includes(f),2,'capture');await wait(1.4);if(f.mode!=='net')throw Error('A gentle lift lost the fish');return f;
  }
  bind('#qa-catch',async()=>{const f=await scoop(SPECIES[0]),before=game.score.caughtCount;report('Captured � tipping toward basket');if(!game.net.deposit())throw Error('Basket was out of range');await until(()=>f.mode==='banked',7,'basket deposit');await wait(4.5);if(game.score.caughtCount!==before+1)throw Error('Deposit scoring was not exactly once');if(!game.basket.pile.bodies.every(b=>b.asleep))throw Error('Basket contents did not sleep');report('PASS · actual scoop, deposit, score and sleeping basket fish');});
  bind('#qa-release',async()=>{const f=await scoop(SPECIES[2]),before=game.score.releasedSmolts;game.releaseCargo();await until(()=>f.mode==='current',3,'water release');if(game.score.releasedSmolts!==before+1)throw Error('Water-confirmed juvenile release failed');report('PASS · juvenile release reaches water and earns one reward');});
  bind('#qa-spam',async()=>{const f=await scoop(SPECIES[0]),before=game.score.caughtCount;for(let i=0;i<5;i++){game.net.down();game.net.up();await wait(.08);}await until(()=>f.mode!=='net',3);if(game.score.caughtCount!==before)throw Error('Escape awarded points');report('PASS · rapid scoops eject fish without basket points');});
 }
+
 
