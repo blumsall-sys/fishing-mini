@@ -26,7 +26,7 @@ export class DipNetController {
   const from=this.camera.getPosition();
   const dir=locked?this.camera.forward.clone():this.camera.camera.screenToWorld(this.pointer.x,this.pointer.y,50).sub(from).normalize();
   const horizontal=new pc.Vec3(dir.x,0,dir.z).normalize();
-  const distance=dir.y<-.03?pc.math.clamp((this.level.waterY-from.y)/dir.y*Math.hypot(dir.x,dir.z),.9,3.1):2.6;
+  const distance=dir.y<-.03?pc.math.clamp((this.level.waterY-(this.level.water?.fishDepth??.48)-from.y)/dir.y*Math.hypot(dir.x,dir.z),.9,3.1):2.6;
   this.desired=from.clone().add(horizontal.mulScalar(this.trapped.length?1.15:!this.enabled?1.4:distance));
   this.desired.y=this.trapped.length?from.y-.65:this.submerged?this.level.waterY-.65:this.level.waterY+.48;
   if(!this.trapped.length){
